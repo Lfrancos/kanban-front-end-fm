@@ -1,84 +1,110 @@
-import { Box, Container, Typography, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Switch, { SwitchProps } from "@mui/material/Switch";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useAppDispatch} from "../../store/hooks";
-import { toggleTheme } from "../../store/ui/themeSlice";
+import { Box, Container, Typography, Button, useTheme } from "@mui/material";
+import useStore from "../../store/store";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-    width: 62,
-    height: 34,
-    padding: 7,
-    "& .MuiSwitch-switchBase": {
-        margin: 1,
-        padding: 0,
-        transform: "translateX(6px)",
-        "&.Mui-checked": {
-            color: "#fff",
-            transform: "translateX(22px)",
-            "& .MuiSwitch-thumb:before": {
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                    "#fff"
-                )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
-            },
-            "& + .MuiSwitch-track": {
-                opacity: 1,
-                backgroundColor:
-                    theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
-            },
-        },
-    },
-    "& .MuiSwitch-thumb": {
-        backgroundColor: theme.palette.mode === "dark" ? "#003892" : "#001e3c",
-        width: 32,
-        height: 32,
-        "&:before": {
-            content: "''",
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            left: 0,
-            top: 0,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                "#fff"
-            )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
-        },
-    },
-    "& .MuiSwitch-track": {
-        opacity: 1,
-        backgroundColor: theme.palette.mode === "dark" ? "#8796A5" : "#aab4be",
-        borderRadius: 20 / 2,
-    },
-}));
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import { CreateButton } from "../buttons/CreateButton";
+import Image from "next/image";
+
+const useGetBoards = () => {
+    const getBoards = async () => {
+        try {
+            const { data } = await axios.get(`http://localhost:5000/boards`);
+            return data;
+        } catch (error) {
+            console.log(error);
+            return;
+        }
+    };
+    return useQuery(["boards", getBoards]);
+};
 
 export const Navbar = () => {
-    const dispatch = useAppDispatch()
-    const onThemeChange = () => {
-        console.log('theme has changed!')
-        dispatch(toggleTheme())
-    }
+    const store = useStore((state) => state);
+    const setTheme = useStore((state) => state.setTheme);
+    const theme = useTheme();
+    const boardQuery = useGetBoards();
     return (
         <Box
             component="header"
             sx={{
-                backgroundColor: "primary.main",
-                color: "white",
-                padding: 2,
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "1rem",
             }}
         >
-            <Container
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                }}
-            >
-                <Typography component="h1" variant={"h5"}>
-                    jira app
-                </Typography>
-                <MaterialUISwitch onClick={onThemeChange} defaultChecked />
-            </Container>
+            <>
+                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <>
+                        <Box
+                            sx={{
+                                width: 30,
+                                height: 30,
+                            }}
+                        >
+                            <Image
+                                src={"/assets/logo-mobile.svg"}
+                                alt={"kangan logo"}
+                                layout={"responsive"}
+                                width={60}
+                                height={60}
+                            />
+                        </Box>
+                        {boardQuery.isLoading
+                            ? console.log("loading")
+                            : console.log(boardQuery.data)}
+                        {boardQuery.isLoading ? (
+                            <Button
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                }}
+                                endIcon={<KeyboardArrowDownIcon />}
+                            >
+                                <Typography variant={"h6"}>Boards</Typography>
+                            </Button>
+                        ) : boardQuery.isError ? (
+                            <Button
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                }}
+                                endIcon={<KeyboardArrowDownIcon />}
+                            >
+                                <Typography variant={"h6"}>Boards</Typography>
+                            </Button>
+                        ) : (
+                            <Button
+                                endIcon={
+                                    boardQuery.isLoading ? null : boardQuery.isError ? null : (
+                                        <KeyboardArrowDownIcon />
+                                    )
+                                }
+                            >
+                                <Typography variant={"h6"} component={"h2"}>
+                                    {" "}
+                                    Platform Launch{" "}
+                                </Typography>
+                            </Button>
+                        )}
+                    </>
+                </Box>
+                <Box sx={{display: "flex", alignItems: "center"}}>
+                    <CreateButton />
+                    <Button sx={{
+                        margin: 0,
+                        padding: 0,
+                        minWidth: "auto"
+                    }}>
+                        <MoreVertIcon />
+                    </Button>
+                </Box>
+            </>
         </Box>
     );
 };

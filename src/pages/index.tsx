@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         <Theme>
             <>
                 <Navbar />
-                <Box component={"main"}>
+                {/* <Box component={"main"}>
                     {statusesQuery.isLoading ? (
                         <p>loading...</p>
                     ) : (
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
                                     overflow: "auto",
                                 }}
                             >
-                                {statusesQuery.data.length > 0 && (
+                                {statusesQuery.data ? (
                                     <>
                                         {statusesQuery.data.map(
                                             (status: interfaces.Statuses) => (
@@ -46,12 +46,12 @@ const Home: NextPage = () => {
                                             )
                                         )}
                                     </>
-                                )}
+                                ) : null }
                                 <CreateStatus />
                             </Container>
                         </>
                     )}
-                </Box>
+                </Box> */}
             </>
         </Theme>
     );

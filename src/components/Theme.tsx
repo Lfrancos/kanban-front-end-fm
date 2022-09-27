@@ -1,5 +1,5 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { useAppSelector } from "../store/hooks";
+import { CssBaseline, ThemeProvider, useTheme } from "@mui/material";
+import useStore from "../store/store";
 import { lightTheme, darkTheme } from "../themes";
 
 interface Props {
@@ -7,9 +7,9 @@ interface Props {
 }
 
 export const Theme = ({ children }: Props) => {
-    const { theme } = useAppSelector((state) => state.ui);
+    const theme = useStore(state => state.theme);
     return (
-        <ThemeProvider theme={theme.lightMode ? lightTheme : darkTheme}>
+        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
             <CssBaseline />
             {children}
         </ThemeProvider>

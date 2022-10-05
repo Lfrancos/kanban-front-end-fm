@@ -1,17 +1,22 @@
-import { CssBaseline, ThemeProvider, useTheme } from "@mui/material";
-import useStore from "../store/store";
-import { lightTheme, darkTheme } from "../themes";
+import { extendTheme } from "@mui/joy";
 
-interface Props {
-    children: JSX.Element;
-}
-
-export const Theme = ({ children }: Props) => {
-    const theme = useStore(state => state.theme);
-    return (
-        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-            <CssBaseline />
-            {children}
-        </ThemeProvider>
-    );
-};
+export const theme = extendTheme({
+    colorSchemes: {
+        light: {
+            palette: {
+                primary: {
+                    solidBg: "hsl(var(--purple))",
+                    solidDisabledBg: "hsl(var(--purple-light), .4)",
+                },
+                text: {
+                    primary: "hsl(var(--dark-black))",
+                    secondary: "hsl(var(--medium-gray))",
+                    tertiary: "hsl(var(--purple))"
+                },
+            },
+        },
+    },
+    fontFamily: {
+        body: "var(--font)",
+    },
+});

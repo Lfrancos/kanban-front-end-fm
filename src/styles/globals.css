@@ -1,5 +1,11 @@
 :root {
   --font: 'Plus Jakarta Sans', sans-serif;
+  --header-height: 50px;
+  --background-transparent-dark: hsla(235, 16%, 15%, .1);
+  --purple-light: 243, 100%, 82%;
+  --purple: 242, 48%, 58%;
+  --medium-gray: 216, 15%, 57%;
+  --dark-black: 237, 100%, 4%;
 }
 
 

@@ -52,35 +52,12 @@ This exercise seems like the perfect exercise to work in fullstack, the goal of 
 
 ### Plan of action
 
-Based on what I know the best way to organize the data is:
-  I feel separating everything will make the app easier to handle, maybe the look up for all the information will make the app a little slower, but I think I can make the experience better using optimistic mutations.
+Right now I'm feeling that the main problem has to do with saving the data in the local storage.
+For now It would be better if I'm able to find a way to make it work without the local storage.
 
+So the problem when I take out the local storage, is that when I reload the page, the "selected Board" disappears and when it comes back it doesn't know where it is.
 
-Board
-  _id
-  title: string
-  tasks: _id(task)[] 
-
-Task
-  _id
-  title: string
-  Description: string
-  Subtask: string[]
-  status: _id(status)
-
-Status
-  _id
-  title: string
-
-### Built with
-
-- Semantic HTML5 markup
-- CSS custom properties
-- Flexbox
-- CSS Grid
-- Mobile-first workflow
-- [React](https://reactjs.org/) - JS library
-- [Next.js](https://nextjs.org/) - React framework
+I want to make it so that if you reload you get to the same place.
 
 ### What I learned
 

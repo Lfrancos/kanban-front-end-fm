@@ -3,25 +3,30 @@ import { Button } from "@mui/joy";
 import AddIcon from "@mui/icons-material/Add";
 
 interface Props {
-    boardSelected: string;
+    disabled?: boolean;
+    children?: string;
+    onClick?: any;
+    size?: "sm" | "md" | "lg";
+    fullWidth?: boolean;
 }
 
-export const CreateButton = ({boardSelected = ''}: Props) => {
+export const CreateButton = ({
+    onClick,
+    children,
+    disabled = false,
+    size = "md",
+    fullWidth
+}: Props) => {
     return (
         <Button
-            sx={{
-                backgroundColor: "primary.main",
-                color: "primary.contrastText",
-                width: 30,
-                borderRadius: 25,
-                height: 32,
-                margin: 0,
-                padding: 0,
-                minWidth: 50,
-            }}
-            disabled={ !boardSelected }
+            sx={{my:2}}
+            fullWidth={fullWidth ? true : false}
+            size={size}
+            disabled={disabled ? true : false}
+            startDecorator={children ? <AddIcon /> : null}
+            onClick={onClick ? onClick : null}
         >
-            <AddIcon />
+            {!children ? <AddIcon /> : children}
         </Button>
     );
 };

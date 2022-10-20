@@ -1,6 +1,8 @@
 import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { Board } from '../interfaces';
+import { Board, BoardToDelete } from '../interfaces';
+
+
 
 
 interface BoardsState {
@@ -8,6 +10,12 @@ interface BoardsState {
     toggleBoardsMenu: () => void;
     selectedBoard: Board;
     changeSelected: (_id: string, title: string) => void;
+    boardCreated: boolean;
+    toggleBoardCreated: () => void;
+    deleteBoard: boolean;
+    toggleDeleteBoard: () => void;
+    boardToDelete: BoardToDelete;
+    changeBoardToDelete: (_id: string, title: string) => void;
 }
 
 export const useBoardsStore = create<BoardsState>()(
@@ -16,8 +24,14 @@ export const useBoardsStore = create<BoardsState>()(
             (set) => ({
                 boardsMenuOpen: false,
                 toggleBoardsMenu: () => set((state) => ({...state, boardsMenuOpen: !state.boardsMenuOpen})),
-                selectedBoard: {_id: '', title: '', tasks: []},
+                selectedBoard: {_id: '', title: '', statuses: []},
                 changeSelected: (_id, title) => set((state) => ({...state, selectedBoard : {...state.selectedBoard, _id, title }})),
+                boardCreated: false,
+                toggleBoardCreated: () => set((state) => ({...state, boardCreated: !state.boardCreated})),
+                deleteBoard: false,
+                toggleDeleteBoard: () => set((state) => ({...state, deleteBoard: !state.deleteBoard})),
+                boardToDelete: {_id: '', title: ''},
+                changeBoardToDelete: (_id,title) => set((state) => ({...state, boardToDelete: {...state.boardToDelete, _id, title} }))
             }),
             {
                 name: "boards",

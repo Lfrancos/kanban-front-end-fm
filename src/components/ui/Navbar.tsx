@@ -18,7 +18,6 @@ import { useBoardsStore } from "./../../store/boardStore";
 import { useGetBoards } from "../../hooks/useGetBoards";
 
 export const Navbar = () => {
-    const [boardSelected, setSelectedBoard] = useState("");
     const selectedBoard = useBoardsStore((state) => state.selectedBoard);
     const changeSelectedBoard = useBoardsStore((state) => state.changeSelected);
     const router = useRouter();
@@ -29,7 +28,6 @@ export const Navbar = () => {
     const boardsQuery = useGetBoards();
 
     const handleBoardMenuClick = () => {
-        console.log("clicked");
         toggleBoardsMenu();
         if (!selectedBoard._id) {
             if (boardsQuery.data && boardsQuery.data.length > 0) {
@@ -109,7 +107,11 @@ export const Navbar = () => {
                         </>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <CreateButton boardSelected={boardSelected} />
+                        <CreateButton
+                            disabled={
+                                selectedBoard.statuses.length > 1 ? false : true
+                            }
+                        />
                         <Button
                             sx={{
                                 margin: 0,
@@ -124,9 +126,7 @@ export const Navbar = () => {
                 </>
             </Box>
             {boardMenu && (
-                <BoardMenu
-                    boards={boardsQuery.isLoading ? [] : boardsQuery.data}
-                />
+                <BoardMenu/>
             )}
         </>
     );

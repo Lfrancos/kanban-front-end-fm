@@ -1,10 +1,12 @@
 :root {
   --font: 'Plus Jakarta Sans', sans-serif;
   --header-height: 50px;
-  --background-transparent-dark: hsla(235, 16%, 15%, .1);
+  --height-full: calc(100vh - var(--header-height));
+  --background-transparent-dark: hsla(235, 16%, 15%, .5);
   --purple-light: 243, 100%, 82%;
   --purple: 242, 48%, 58%;
   --medium-gray: 216, 15%, 57%;
+  --danger: 0, 78%, 63%;
   --dark-black: 237, 100%, 4%;
 }
 

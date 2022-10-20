@@ -23,46 +23,61 @@ export const usePostBoard = () => {
             return;
         }
     };
+
+    // this is the return
+
     return useMutation(mutationFunction, {
         onMutate: (variables) => {
             const savedCache = queryClient.getQueryData(["boards"]);
 
             queryClient.setQueriesData(["boards"], (prev: any) => {
-                return [
+                console.log("THIS IS THE PREVIEWS", prev )
+                return {
                     ...prev,
-                    {
-                        _id: "1324",
-                        title: variables.title.toLowerCase(),
-                        tasks: [],
-                    },
-                ];
+                    data: [...prev.data,
+                        {
+                            _id: "1324",
+                            title: variables.title.toLowerCase(),
+                            statuses: [],
+                        }
+                    ]
+                }
+                // return [
+                //     ...prev,
+                //     {
+                //         _id: "1324",
+                //         title: variables.title.toLowerCase(),
+                //         statuses: [],
+                //     },
+                // ];
             });
             return () => {
                 queryClient.setQueryData(["boards"], savedCache);
             };
         },
-        onSuccess: (data, variables, restoreCache) => {
-            console.log("This is the DATA of onSuccess", data);
-            console.log("This is the variables of onSuccess", variables);
-            if (typeof restoreCache !== "undefined") {
-                restoreCache();
-            }
-            const newBoard = {
-                _id: data.upsertedId,
-                title: variables.title,
-                tasks: [],
-            };
-            router.push(`/boards/${data.upsertedId}`);
-            changeBoardSelected(data.upsertedId, variables.title);
-            queryClient.setQueryData(["boards"], (prev: any) => {
-                if (typeof prev !== "undefined") {
-                    return [...prev, newBoard];
-                }
-            });
-        },
+        // onSuccess: (data, variables, restoreCache) => {
+        //     if (typeof restoreCache !== "undefined") {
+        //         restoreCache();
+        //     }
+
+        //     const newBoard = {
+        //         _id: data.upsertedId,
+        //         title: variables.title,
+        //         statuses: [],
+        //     };
+
+        //     router.push(`/boards/${data.upsertedId}`);
+
+        //     changeBoardSelected(data.upsertedId, variables.title);
+
+        //     queryClient.setQueryData(["boards"], (prev: any) => {
+        //         if (typeof prev !== "undefined") {
+        //             return {...prev, data: [...prev.data, newBoard]}
+        //             // return [...prev, newBoard];
+        //         }
+        //     });
+        // },
         onError: (data, variables, restoreCache) => {
-            console.log("onError data:", data);
-            console.log("onError Variables:", variables);
             if (typeof restoreCache !== "undefined") {
                 restoreCache();
             }

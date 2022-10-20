@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
 
 import { Navbar } from "../components/ui/Navbar";
-import { useRouter } from "next/router";
-import { useBoardsStore } from "../store/boardStore";
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
-import { useGetBoards } from '../hooks/useGetBoards';
+import { useHydrated } from "../hooks/useHydrated";
+import { Loading } from "../components/Loading";
 
 const Home: NextPage = () => {
+    const hydrated = useHydrated();
+    if (!hydrated) return <Loading />;
+
     return (
         <>
             <Navbar />

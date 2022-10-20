@@ -7,15 +7,15 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useRouter } from "next/router";
 import { useBoardsStore } from "./../../store/boardStore";
 import { useState } from "react";
-import { useDeleteBoard } from '../../hooks/useDeleteBoard';
+import { useDeleteBoard } from "../../hooks/useDeleteBoard";
+import { DeleteMessage } from "../DeleteMessage";
+import shallow from "zustand/shallow";
 
 interface Props {
     title?: string;
     onClick?: () => void;
     id?: string;
 }
-
-
 
 export const BoardItem = ({
     title = "Create new board",
@@ -25,30 +25,47 @@ export const BoardItem = ({
     // this is the state for the box menu to edit or delete
     const [editing, setEditing] = useState(false);
 
-    // this gives you the object of the board that is selected if you have one selected
-    const selectedBoard = useBoardsStore((state) => state.selectedBoard);
-    // this is the function to change the selected board
-    const changeSelectedBoard = useBoardsStore((state) => state.changeSelected);
-    // this will open or close the menu of the boards
-    const toggleBoardsMenu = useBoardsStore((state) => state.toggleBoardsMenu);
+    ////// this is the board store /////
 
-    const deleteBoardMutation = useDeleteBoard();
+    const {
+        selectedBoard,
+        toggleDeleteBoard,
+        deleteBoard,
+        changeSelectedBoard,
+        toggleBoardsMenu,
+        changeBoardToDelete,
+    } = useBoardsStore(
+        (state) => ({
+            changeSelectedBoard: state.changeSelected,
+            selectedBoard: state.selectedBoard,
+            toggleDeleteBoard: state.toggleDeleteBoard,
+            deleteBoard: state.deleteBoard,
+            toggleBoardsMenu: state.toggleBoardsMenu,
+            changeBoardToDelete: state.changeBoardToDelete,
+        }),
+        shallow
+    );
+
+    // this gives you the object of the board that is selected if you have one selected
+
+
 
     const handleChangeOfBoard = () => {
         router.push(id ? `/boards/${id}` : "/");
-                                  if (id) {
-                                      changeSelectedBoard(id, title);
-                                      toggleBoardsMenu();
-                                  }
-    }
-
-    const handleDelete = (boardId?: string ) => {
-        if ( typeof boardId !== "undefined" ) {
-            deleteBoardMutation.mutate(boardId);
+        if (id) {
+            changeSelectedBoard(id, title);
+            toggleBoardsMenu();
         }
     };
 
+
+    const handleEditing = () => {
+        setEditing(!editing);
+        changeBoardToDelete(id, title);
+    };
+
     const router = useRouter();
+
     return (
         <>
             <Box
@@ -78,11 +95,7 @@ export const BoardItem = ({
                     }}
                     variant="plain"
                     startDecorator={<Icon src="/assets/icon-board.svg" />}
-                    onClick={
-                        onClick
-                            ? onClick
-                            : handleChangeOfBoard
-                    }
+                    onClick={onClick ? onClick : handleChangeOfBoard}
                 >
                     {onClick && <AddIcon />}
                     <Typography
@@ -104,6 +117,7 @@ export const BoardItem = ({
                         {title}
                     </Typography>
                 </Button>
+
                 {!onClick && (
                     <Button
                         sx={{
@@ -117,7 +131,7 @@ export const BoardItem = ({
                             }`,
                         }}
                         variant="plain"
-                        onClick={() => setEditing(!editing)}
+                        onClick={handleEditing}
                     >
                         {" "}
                         <MoreVertIcon />{" "}
@@ -125,7 +139,6 @@ export const BoardItem = ({
                 )}
 
                 {/*  the menu to edit or delete the board item */}
-
 
                 {editing && (
                     <>
@@ -143,23 +156,32 @@ export const BoardItem = ({
                                 boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                             }}
                         >
-                            <Typography
-                                sx={{
-                                    color: "text.secondary",
-                                }}
-                            >
-                                edit
-                            </Typography>
-                            <Typography
-                                color={"danger"}
-                                onClick={() => handleDelete(id)}
-                            >
-                                delete
-                            </Typography>
+                            <>
+                                <Typography
+                                    sx={{
+                                        color: "text.secondary",
+                                    }}
+                                >
+                                    edit
+                                </Typography>
+                                <Typography
+                                    color={"danger"}
+                                    onClick={() => {
+                                        toggleDeleteBoard();
+                                        setEditing(!editing);
+                                    }}
+                                >
+                                    delete
+                                </Typography>
+                            </>
                         </Box>
                     </>
                 )}
             </Box>
+
+            {/* {deleteBoard && (
+                <DeleteMessage title={title} onCancel={toggleDeleteBoard} element={"board"} />
+            )} */}
         </>
     );
 };

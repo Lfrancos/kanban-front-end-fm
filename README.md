@@ -59,6 +59,8 @@ So the problem when I take out the local storage, is that when I reload the page
 
 I want to make it so that if you reload you get to the same place.
 
+``` I have to say that for now I think that the goal above I was able to achieve```
+
 ### What I learned
 
 
